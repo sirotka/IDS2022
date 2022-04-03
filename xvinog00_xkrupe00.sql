@@ -20,6 +20,8 @@
 
 -- DELETE TABLES
 
+--TODO airports and reservation
+
     DROP TABLE customers CASCADE CONSTRAINTS;
     DROP TABLE flight_tickets CASCADE CONSTRAINTS;
     DROP TABLE aircrafts CASCADE CONSTRAINTS;
@@ -35,6 +37,8 @@
     CREATE SEQUENCE flight_ticket_seq START WITH 1 INCREMENT BY 1 NOCYCLE;
 
 -- CREATE TABLE
+
+--TODO airports and reservation
 
   CREATE TABLE airlines (
     id    VARCHAR(2) NOT NULL PRIMARY KEY CHECK(REGEXP_LIKE(id,'[A-Z0-9]{2}')),
@@ -99,6 +103,12 @@
 
 
 -- SET serveroutput ON;
+
+--TODO figure out whether to write exceptions?
+
+--INSERT PART
+
+--TODO airports and reservation
 
     INSERT INTO customers(id, first_name, last_name, email, addr_street, addr_town, addr_post_code, addr_state)
         VALUES(00001, 'Leonardo', 'Blue', 'leotheleader@gmail.com', 'Bayport Lane', 'New York', 10461, 'USA');
