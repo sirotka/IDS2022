@@ -51,7 +51,7 @@
     );
 
     CREATE TABLE aircrafts (
-        id NUMBER NOT NULL PRIMARY KEY,
+        id NUMBER PRIMARY KEY,
         type VARCHAR(128),
         model VARCHAR(128),
         airline VARCHAR(2),
@@ -80,7 +80,7 @@
     );
 
     CREATE TABLE reservations (
-        id NUMBER NOT NULL PRIMARY KEY,
+        id NUMBER PRIMARY KEY,
         status NUMBER NOT NULL CHECK(status = 0 or status = 1), -- true or false
         created_at TIMESTAMP NOT NULL,
         owner NUMBER,
@@ -89,20 +89,20 @@
     );
 
     CREATE TABLE flight_tickets (
-        flight_number VARCHAR(6) NOT NULL PRIMARY KEY CHECK(REGEXP_LIKE(flight_number, '[0-9a-zA-Z]{2}[0-9]{4}')),
-        departure_time TIMESTAMP WITH TIME ZONE NOT NULL,
-        arrival_time TIMESTAMP WITH TIME ZONE NOT NULL,
+        flight_code VARCHAR(6) NOT NULL PRIMARY KEY CHECK(REGEXP_LIKE(flight_code, '[0-9a-zA-Z]{2}[0-9]{4}')),
+        dep_time TIMESTAMP WITH TIME ZONE NOT NULL,
+        arr_time TIMESTAMP WITH TIME ZONE NOT NULL,
         aircraft NUMBER,
         airline VARCHAR(2) NOT NULL,
         price NUMBER NOT NULL,
-        start_loc VARCHAR(3) NOT NULL,
-        destination_loc VARCHAR(3) NOT NULL,
+        dep_loc VARCHAR(3) NOT NULL,
+        arr_loc VARCHAR(3) NOT NULL,
         seat_number VARCHAR(3) CHECK(REGEXP_LIKE(seat_number, '[0-9][0-9][A-Z]')),
         passenger NUMBER,
         reservation NUMBER NOT NULL,
 
-        CONSTRAINT FK_TICKET_START_LOC FOREIGN KEY(start_loc) REFERENCES airports(airport_code),
-        CONSTRAINT FK_TICKET_DESTINATION_LOC FOREIGN KEY(destination_loc) REFERENCES airports(airport_code),
+        CONSTRAINT FK_TICKET_START_LOC FOREIGN KEY(dep_loc) REFERENCES airports(airport_code),
+        CONSTRAINT FK_TICKET_DESTINATION_LOC FOREIGN KEY(arr_loc) REFERENCES airports(airport_code),
         CONSTRAINT FK_TICKET_WITH_AIRCRAFT FOREIGN KEY(aircraft) REFERENCES aircrafts(id),
         CONSTRAINT FK_TICKET_OWNER FOREIGN KEY(passenger) REFERENCES customers(id),
         CONSTRAINT FK_TICKET_CREATOR FOREIGN KEY(airline) REFERENCES airlines(id),
@@ -174,36 +174,81 @@
         VALUES('TKU', 'Turku Airport', 'Turku', 'FI');
 
 --TODO: tickets insert "пиздец лень доделывать эти сраные билеты"
-    INSERT INTO flight_tickets(flight_number, departure_time, arrival_time, aircraft, airline, start_loc, destination_loc, seat_number, passenger)
-        VALUES('KF8495', TIMESTAMP '2022-04-10 11:00:00.00 +01:00', TIMESTAMP '2022-04-10 15:00:00.00 +03:00', 001, 'LA', 'KDF', 'RTG');
+    INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation)
+        VALUES('BA2490',
+               TO_TIMESTAMP(:ts_val, '2022-03-20 0924:05:00'),
+               TO_TIMESTAMP(:ts_val, '2022-03-20 1024:55:00'),
+               1,
+               'FA',
+               100,
+               'TKU',
+               'LHR',
+               '17A',
+               1,
+               1);
+    INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation)
+        VALUES('RG2700',
+               TO_TIMESTAMP(:ts_val, '2022-03-21 1024:25:00'),
+               TO_TIMESTAMP(:ts_val, '2022-03-21 1324:50:00'),
+               2,
+               'UA',
+               50,
+               'JFK',
+               'YOW',
+               '09B',
+               2,
+               2);
+    INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation)
+        VALUES('SD1489',
+               TO_TIMESTAMP(:ts_val, '2022-03-23 1524:35:00'),
+               TO_TIMESTAMP(:ts_val, '2022-03-24 1124:35:00'),
+               3,
+               'AA',
+               200,
+               'SYD',
+               'JFK',
+               '13C',
+               3,
+               3);
+    INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation)
+        VALUES('EQ1337',
+                TO_TIMESTAMP(:ts_val, '2022-03-27 1924:45:00'),
+                TO_TIMESTAMP(:ts_val, '2022-03-20 1724:10:00'),
+                4,
+                'CAN',
+                300,
+                'YOW',
+                'TKU',
+                '01A',
+                4,
+                4);
+INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation)
+        VALUES('UI2020',
+                TO_TIMESTAMP(:ts_val, '2022-03-29 0724:00:00'),
+                TO_TIMESTAMP(:ts_val, '2022-03-30 0224:35:00'),
+                5,
+                'KA',
+                375,
+                'LHR',
+                'SYD',
+                '22E',
+                5,
+                5);
 
-    INSERT INTO flight_tickets(flight_number, departure_time, arrival_time, aircraft, airline, start_loc, destination_loc, seat_number, passenger)
-        VALUES('KF8495', TIMESTAMP '2022-04-10 11:00:00.00 +01:00', TIMESTAMP '2022-04-10 15:00:00.00 +03:00', 002, 'LA', 'KDF', 'RTG');
+    INSERT INTO reservations(status, created_at, owner)
+        VALUES(1, TO_TIMESTAMP(:ts_val, '2022-03-13 1524:24:33'), 1);
 
-    INSERT INTO flight_tickets(flight_number, departure_time, arrival_time, aircraft, airline, start_loc, destination_loc, seat_number, passenger)
-        VALUES('KF8495', TIMESTAMP '2022-04-10 11:00:00.00 +01:00', TIMESTAMP '2022-04-10 15:00:00.00 +03:00', 003, 'LA', 'KDF', 'RTG');
+    INSERT INTO reservations(status, created_at, owner)
+        VALUES(0, TO_TIMESTAMP(:ts_val, '2022-03-16 0724:13:11'), 2);
 
-    INSERT INTO flight_tickets(flight_number, departure_time, arrival_time, aircraft, airline, start_loc, destination_loc, seat_number, passenger)
-        VALUES('KF8495', TIMESTAMP '2022-04-10 11:00:00.00 +01:00', TIMESTAMP '2022-04-10 15:00:00.00 +03:00', 004, 'LA', 'KDF', 'RTG');
+    INSERT INTO reservations(status, created_at, owner)
+        VALUES(1, TO_TIMESTAMP(:ts_val, '2022-03-20 0224:01:58'), 3);
 
-    INSERT INTO flight_tickets(flight_number, departure_time, arrival_time, aircraft, airline, start_loc, destination_loc, seat_number, passenger)
-        VALUES('KF8495', TIMESTAMP '2022-04-10 11:00:00.00 +01:00', TIMESTAMP '2022-04-10 15:00:00.00 +03:00', 005, 'LA', 'KDF', 'RTG');
+    INSERT INTO reservations(status, created_at, owner)
+        VALUES(0, TO_TIMESTAMP(:ts_val, '2022-03-18 1224:37:42'), 4);
 
-
-    INSERT INTO reservations(id, status, created_at, owner)
-        VALUES(00001, '1', timestamp'2022-07-20 13:30:00.00', '00003');
-
-    INSERT INTO reservations(id, status, created_at, owner)
-        VALUES(00001, '1', timestamp'2022-07-20 13:30:00.00', '00003');
-
-    INSERT INTO reservations(id, status, created_at, owner)
-        VALUES(00001, '1', timestamp'2022-07-20 13:30:00.00', '00003');
-
-    INSERT INTO reservations(id, status, created_at, owner)
-        VALUES(00001, '1', timestamp'2022-07-20 13:30:00.00', '00003');
-
-    INSERT INTO reservations(id, status, created_at, owner)
-        VALUES(00001, '1', timestamp'2022-07-20 13:30:00.00', '00003');
+    INSERT INTO reservations(status, created_at, owner)
+        VALUES(1, TO_TIMESTAMP(:ts_val, '2022-03-20 2124:56:22'), 5);
 
 
     INSERT INTO airlines(id, name)
@@ -222,17 +267,17 @@
         VALUES('CA', 'CANADIAN AIRLINE');
 
 
-    INSERT INTO aircrafts(id, type, model, airline)
-        VALUES(001, 'Boeing', '737 MAX', 'KA');
+    INSERT INTO aircrafts(type, model, airline)
+        VALUES('Boeing', '737 MAX', 'KA');
 
-    INSERT INTO aircrafts(id, type, model, airline)
-        VALUES(002, 'Airbus', 'A3xx', 'UA');
+    INSERT INTO aircrafts(type, model, airline)
+        VALUES('Airbus', 'A3xx', 'UA');
 
-    INSERT INTO aircrafts(id, type, model, airline)
-        VALUES(003, 'Airbus', 'A350', 'CA');
+    INSERT INTO aircrafts(type, model, airline)
+        VALUES('Airbus', 'A350', 'CA');
 
-    INSERT INTO aircrafts(id, type, model, airline)
-        VALUES(004, 'Boeing', '200LR', 'UK');
+    INSERT INTO aircrafts(type, model, airline)
+        VALUES('Boeing', '200LR', 'UK');
 
-    INSERT INTO aircrafts(id, type, model, airline)
-        VALUES(005, 'Airbus', 'e.g.', 'AA');
+    INSERT INTO aircrafts(type, model, airline)
+        VALUES('Airbus', 'e.g.', 'AA');
