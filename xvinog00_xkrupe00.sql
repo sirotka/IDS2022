@@ -14,13 +14,12 @@
         Flight tickets
         Aircrafts
         Airlines
-
  */
 
 
--- DELETE TABLES
+-- DELETE TABLE
 
---TODO airports and reservation
+-- TODO airports and reservation
 
     DROP TABLE customers CASCADE CONSTRAINTS;
     DROP TABLE flight_tickets CASCADE CONSTRAINTS;
@@ -28,7 +27,6 @@
     DROP TABLE airlines CASCADE CONSTRAINTS;
     DROP TABLE airports CASCADE CONSTRAINTS;
     DROP TABLE reservations CASCADE CONSTRAINTS;
-
 
     DROP SEQUENCE customer_seq;
         CREATE SEQUENCE customer_seq START WITH 1 INCREMENT BY 1 NOCYCLE;
@@ -44,9 +42,10 @@
 
 -- CREATE TABLE
 
---TODO airports and reservation
+-- TODO airports and reservation
 
     CREATE TABLE airlines (
+        -- id according to IATA standard
         id VARCHAR(2) NOT NULL PRIMARY KEY CHECK(REGEXP_LIKE(id,'[A-Z0-9]{2}')),
         name VARCHAR(128) NOT NULL
     );
@@ -61,10 +60,12 @@
     );
 
     CREATE TABLE airports (
+        -- airport_codes according to IATA standard
         airport_code VARCHAR(2) NOT NULL PRIMARY KEY CHECK(REGEXP_LIKE(airport_code,'[A-Z]{3}')),
         name VARCHAR(128) NOT NULL,
         city VARCHAR(128),
-        country VARCHAR(128)
+        -- countries according to ISO 3166-1 Alpha-2 code standard
+        country VARCHAR(2) NOT NULL CHECK (REGEXP_LIKE(country, '[A-Z]{2}'))
     );
 
     CREATE TABLE customers (
@@ -136,8 +137,6 @@
             FROM dual;
         END;
     /
-
--- SET serveroutput ON;
 
 --TODO figure out whether to write exceptions?
 
