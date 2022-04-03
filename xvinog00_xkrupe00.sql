@@ -73,10 +73,10 @@
         first_name VARCHAR(128) NOT NULL,
         last_name VARCHAR(128) NOT NULL,
         email VARCHAR(128) NOT NULL,
-        addr_street VARCHAR(128) NOT NULL,
-        addr_town VARCHAR(128) NOT NULL,
-        addr_post_code NUMBER NOT NULL,
-        addr_state VARCHAR(128) NOT NULL
+        street VARCHAR(128) NOT NULL,
+        town VARCHAR(128) NOT NULL,
+        post_code NUMBER NOT NULL,
+        country VARCHAR(2) NOT NULL CHECK (REGEXP_LIKE(country, '[A-Z]{2}'))
     );
 
     CREATE TABLE reservations (
@@ -138,26 +138,24 @@
         END;
     /
 
---TODO figure out whether to write exceptions?
-
 --INSERT PART
 
 --TODO airports and reservation
 
-    INSERT INTO customers(id, first_name, last_name, email, addr_street, addr_town, addr_post_code, addr_state)
-        VALUES(00001, 'Leonardo', 'Blue', 'leotheleader@gmail.com', 'Bayport Lane', 'New York', 10461, 'USA');
+    INSERT INTO customers(first_name, last_name, email, street, town, post_code, country)
+        VALUES('Leonardo', 'Blue', 'leotheleader@gmail.com', 'Bayport Lane', 'New York', 10461, 'US');
 
-    INSERT INTO customers(id, first_name, last_name, email, addr_street, addr_town, addr_post_code, addr_state)
-        VALUES(00002, 'Raphael', 'Red', 'raphtherebel@gmail.com', 'Cemetery Dr.', 'Waltham', 02453, 'UK');
+    INSERT INTO customers(first_name, last_name, email, street, town, post_code, country)
+        VALUES('Raphael', 'Red', 'raphtherebel@gmail.com', 'Cemetery Dr.', 'Waltham', 02453, 'GB');
 
-    INSERT INTO customers(id, first_name, last_name, email, addr_street, addr_town, addr_post_code, addr_state)
-        VALUES(00003, 'Donatello', 'Purple', 'donnythenerd@gmail.com', 'Maintongoon Road', 'Vesper', 3833, 'Australia');
+    INSERT INTO customers(first_name, last_name, email, street, town, post_code, country)
+        VALUES('Donatello', 'Purple', 'donnythenerd@gmail.com', 'Maintongoon Road', 'Vesper', 3833, 'AU');
 
-    INSERT INTO customers(id, first_name, last_name, email, addr_street, addr_town, addr_post_code, addr_state)
-        VALUES(00004, 'Michelangelo', 'Orange', 'mickeythejollier@gmail.com', 'MacLaren Street', 'Ottawa', 00157, 'Canada');
+    INSERT INTO customers(first_name, last_name, email, street, town, post_code, country)
+        VALUES('Michelangelo', 'Orange', 'mickeythejollier@gmail.com', 'MacLaren Street', 'Ottawa', 00157, 'CA');
 
-    INSERT INTO customers(id, first_name, last_name, email, addr_street, addr_town, addr_post_code, addr_state)
-        VALUES(00005, 'Splinter', 'Master', 'splintertherat@gmail.com', 'Hakulintie', 'Turku', 20210, 'Finland');
+    INSERT INTO customers(first_name, last_name, email, street, town, post_code, country)
+        VALUES('Splinter', 'Master', 'splintertherat@gmail.com', 'Hakulintie', 'Turku', 20210, 'FI');
 
 
     INSERT INTO airports(airport_code, name, city, country)
