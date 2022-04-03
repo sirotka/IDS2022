@@ -159,20 +159,19 @@
 
 
     INSERT INTO airports(airport_code, name, city, country)
-        VALUES('', '');
+        VALUES('JFK', 'John F. Kennedy International Airport', 'New York', 'US');
 
     INSERT INTO airports(airport_code, name, city, country)
-        VALUES('', '');
+        VALUES('LHR', 'London Heathrow Airport', 'London', 'GB');
 
     INSERT INTO airports(airport_code, name, city, country)
-        VALUES('', '');
+        VALUES('SYD', 'Sydney Airport', 'Sydney', 'AU');
 
     INSERT INTO airports(airport_code, name, city, country)
-        VALUES('', '');
+        VALUES('YOW', 'Ottawa International Airport', 'Ottawa','CA');
 
     INSERT INTO airports(airport_code, name, city, country)
-        VALUES('', '');
-
+        VALUES('TKU', 'Turku Airport', 'Turku', 'FI');
 
 --TODO: tickets insert "пиздец лень доделывать эти сраные билеты"
     INSERT INTO flight_tickets(flight_number, departure_time, arrival_time, aircraft, airline, start_loc, destination_loc, seat_number, passenger)
