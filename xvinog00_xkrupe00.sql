@@ -188,8 +188,8 @@
                1);
     INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation)
         VALUES('RG2700',
-               TO_TIMESTAMP(:ts_val, '2022-03-21 1024:25:00'),
-               TO_TIMESTAMP(:ts_val, '2022-03-21 1324:50:00'),
+               TIMESTAMP'2022-03-21 10:25:00.00 +01:00',
+               TIMESTAMP'2022-03-21 13:50:00.00 -06:00',
                2,
                'UA',
                50,
@@ -200,8 +200,8 @@
                2);
     INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation)
         VALUES('SD1489',
-               TO_TIMESTAMP(:ts_val, '2022-03-23 1524:35:00'),
-               TO_TIMESTAMP(:ts_val, '2022-03-24 1124:35:00'),
+               TIMESTAMP'2022-03-23 15:35:00.00 +00:00',
+               TIMESTAMP'2022-03-24 11:35:00.00 +02:00',
                3,
                'AA',
                200,
@@ -212,8 +212,8 @@
                3);
     INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation)
         VALUES('EQ1337',
-                TO_TIMESTAMP(:ts_val, '2022-03-27 1924:45:00'),
-                TO_TIMESTAMP(:ts_val, '2022-03-20 1724:10:00'),
+                TIMESTAMP'2022-03-27 19:45:00.00 +05:00',
+                TIMESTAMP'2022-03-20 17:10:00 +05:00',
                 4,
                 'CAN',
                 300,
@@ -224,8 +224,8 @@
                 4);
 INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation)
         VALUES('UI2020',
-                TO_TIMESTAMP(:ts_val, '2022-03-29 0724:00:00'),
-                TO_TIMESTAMP(:ts_val, '2022-03-30 0224:35:00'),
+                TIMESTAMP'2022-03-29 07:00:00.00 -01:00',
+                TIMESTAMP'2022-03-30 02:35:00.00 +01:00',
                 5,
                 'KA',
                 375,
@@ -236,19 +236,19 @@ INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, p
                 5);
 
     INSERT INTO reservations(status, created_at, owner)
-        VALUES(1, TO_TIMESTAMP(:ts_val, '2022-03-13 1524:24:33'), 1);
+        VALUES(1, TIMESTAMP'2022-03-13 15:24:33.00', 1);
 
     INSERT INTO reservations(status, created_at, owner)
-        VALUES(0, TO_TIMESTAMP(:ts_val, '2022-03-16 0724:13:11'), 2);
+        VALUES(0, TIMESTAMP'2022-03-16 07:13:11.00', 2);
 
     INSERT INTO reservations(status, created_at, owner)
-        VALUES(1, TO_TIMESTAMP(:ts_val, '2022-03-20 0224:01:58'), 3);
+        VALUES(1, TIMESTAMP'2022-03-20 02:01:58.00', 3);
 
     INSERT INTO reservations(status, created_at, owner)
-        VALUES(0, TO_TIMESTAMP(:ts_val, '2022-03-18 1224:37:42'), 4);
+        VALUES(0, TIMESTAMP'2022-03-18 12:37:42.00', 4);
 
     INSERT INTO reservations(status, created_at, owner)
-        VALUES(1, TO_TIMESTAMP(:ts_val, '2022-03-20 2124:56:22'), 5);
+        VALUES(1, TIMESTAMP'2022-03-20 21:56:22.00', 5);
 
 
     INSERT INTO airlines(id, name)
