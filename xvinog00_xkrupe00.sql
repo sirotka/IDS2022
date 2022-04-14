@@ -121,6 +121,21 @@
     INSERT INTO customers(first_name, last_name, email, street, town, post_code, user_country)
         VALUES('Aceline', 'Baril', 'AcelineBaril@jourrapide.com', 'avenue Jules Ferry', 'Stains', 93240, 'FR');
 
+    INSERT INTO customers(first_name, last_name, email, street, town, post_code, user_country)
+        VALUES('Lilly', 'Champ', 'LillyChamp@teleworm.us', 'Eshelby Drive', 'Cannonvale', 4802, 'AU');
+
+    INSERT INTO customers(first_name, last_name, email, street, town, post_code, user_country)
+        VALUES('Johan', 'Makinen', 'JohanMakinen@rhyta.com', 'Kluuvikatu', 'Vantaa', 01520, 'FI');
+
+    INSERT INTO customers(first_name, last_name, email, street, town, post_code, user_country)
+        VALUES('Katri', 'Somervuori', 'KatriSomervuori@teleworm.us', 'Pohjoisesplanadi', 'Helsinki', 00130, 'FI');
+
+    INSERT INTO customers(first_name, last_name, email, street, town, post_code, user_country)
+        VALUES('Otakar', 'Sedivy', 'OtakarSedivy@armyspy.com', 'Strojírenská', 'Nove Veseli', 59214, 'CZ');
+
+    INSERT INTO customers(first_name, last_name, email, street, town, post_code, user_country)
+        VALUES('Zuzana', 'Mikova', 'ZuzanaMikova@armyspy.com', 'Masarykova', 'Zabreh', 78901, 'CZ');
+
 
     -- AIRPORTS
     INSERT INTO airports(airport_code, name, city, country)
@@ -149,19 +164,19 @@
 
     -- RESERVATIONS
     INSERT INTO reservations(payment_status, created_at, owner)
-        VALUES(1, TIMESTAMP'2022-03-13 15:24:33.00', 1);
+        VALUES(1, TIMESTAMP'2022-03-13 15:24:33', 1);
 
     INSERT INTO reservations(payment_status, created_at, owner)
-        VALUES(0, TIMESTAMP'2022-03-16 07:13:11.00', 2);
+        VALUES(0, TIMESTAMP'2022-03-16 07:13:11', 2);
 
     INSERT INTO reservations(payment_status, created_at, owner)
-        VALUES(1, TIMESTAMP'2022-03-20 02:01:58.00', 3);
+        VALUES(1, TIMESTAMP'2022-03-20 02:01:58', 3);
 
     INSERT INTO reservations(payment_status, created_at, owner)
-        VALUES(0, TIMESTAMP'2022-03-18 12:37:42.00', 4);
+        VALUES(0, TIMESTAMP'2022-03-18 12:37:42', 4);
 
     INSERT INTO reservations(payment_status, created_at, owner)
-        VALUES(1, TIMESTAMP'2022-03-20 21:56:22.00', 5);
+        VALUES(1, TIMESTAMP'2022-03-20 21:56:22', 5);
 
     -- AIRLINES
     INSERT INTO airlines(airline_code, name, nationality)
@@ -222,8 +237,8 @@
     -- FLIGHT TICKETS
     INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
         VALUES('BA2490',
-               TIMESTAMP'2022-03-20 09:05:00.00 +01:00',
-               TIMESTAMP'2022-03-20 10:55:00 +01:00',
+               TIMESTAMP'2022-03-20 09:05:00',
+               TIMESTAMP'2022-03-20 10:55:00',
                1,
                'FIA',
                100,
@@ -234,8 +249,8 @@
                1);
     INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
         VALUES('RG2700',
-               TIMESTAMP'2022-03-21 10:25:00.00 +01:00',
-               TIMESTAMP'2022-03-21 10:50:00.00 +01:00',
+               TIMESTAMP'2022-03-21 10:25:00',
+               TIMESTAMP'2022-03-21 10:50:00',
                2,
                'USA',
                50,
@@ -246,8 +261,8 @@
                2);
     INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
         VALUES('SD1489',
-               TIMESTAMP'2022-03-23 15:35:00.00 +01:00',
-               TIMESTAMP'2022-03-24 11:35:00.00 +02:00',
+               TIMESTAMP'2022-03-23 15:35:00',
+               TIMESTAMP'2022-03-24 11:35:00',
                3,
                'AUA',
                200,
@@ -258,8 +273,8 @@
                3);
     INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
         VALUES('EQ1337',
-                TIMESTAMP'2022-03-27 19:45:00.00 +05:00',
-                TIMESTAMP'2022-03-20 17:10:00 +05:00',
+                TIMESTAMP'2022-03-27 19:45:00',
+                TIMESTAMP'2022-03-20 17:10:00',
                 4,
                 'CAA',
                 300,
@@ -270,8 +285,8 @@
                 4);
     INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
         VALUES('UI2020',
-                TIMESTAMP'2022-03-29 07:00:00.00 -01:00',
-                TIMESTAMP'2022-03-30 02:35:00.00 +01:00',
+                TIMESTAMP'2022-03-29 07:00:00',
+                TIMESTAMP'2022-03-30 02:35:00',
                 5,
                 'UKA',
                 375,
@@ -294,3 +309,4 @@
 --     R.OWNER = C.ID AND
 --     R.PAYMENT_STATUS = 1;
 
+-- SELECT COUNT(ID) COUNT, USER_COUNTRY FROM CUSTOMERS GROUP BY USER_COUNTRY ORDER BY COUNT;
