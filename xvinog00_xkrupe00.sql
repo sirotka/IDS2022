@@ -30,7 +30,7 @@
 
     CREATE TABLE airlines (
         -- id according to IATA standard
-        airline_code VARCHAR(2) NOT NULL PRIMARY KEY CHECK(REGEXP_LIKE(airline_code,'[A-Z0-9]{2}')),
+        airline_code VARCHAR(3) NOT NULL PRIMARY KEY CHECK(REGEXP_LIKE(airline_code,'[A-Z0-9]{3}')),
         name VARCHAR(128) NOT NULL,
         nationality VARCHAR(2) NOT NULL
     );
@@ -39,7 +39,7 @@
         aircraft_id NUMBER GENERATED AS IDENTITY NOT NULL PRIMARY KEY,
         type VARCHAR(128) NOT NULL,
         model VARCHAR(128) NOT NULL,
-        airline_code VARCHAR(2) NOT NULL,
+        airline_code VARCHAR(3) NOT NULL,
 
         CONSTRAINT FK_AIRCRAFT_OWNER_AIRLINE FOREIGN KEY (airline_code) REFERENCES airlines(airline_code)
     );
@@ -78,7 +78,7 @@
         dep_time TIMESTAMP WITH TIME ZONE NOT NULL,
         arr_time TIMESTAMP WITH TIME ZONE NOT NULL,
         aircraft NUMBER NOT NULL,
-        airline VARCHAR(2) NOT NULL,
+        airline VARCHAR(3) NOT NULL,
         price NUMBER NOT NULL,
         dep_loc VARCHAR(3) NOT NULL,
         arr_loc VARCHAR(3) NOT NULL,
@@ -165,50 +165,59 @@
 
     -- AIRLINES
     INSERT INTO airlines(airline_code, name, nationality)
-        VALUES('FA', 'FINLAND AIRLINE', 'FI');
+        VALUES('FIA', 'FINLAND AIRLINE', 'FI');
 
     INSERT INTO airlines(airline_code, name, nationality)
-        VALUES('UA', 'USA AIRLINE', 'US');
+        VALUES('USA', 'USA AIRLINE', 'US');
 
     INSERT INTO airlines(airline_code, name, nationality)
-        VALUES('KA', 'UK AIRLINE', 'UK');
+        VALUES('UKA', 'UK AIRLINE', 'UK');
 
     INSERT INTO airlines(airline_code, name, nationality)
-        VALUES('AA', 'AUSTRALIAN AIRLINE', 'AU');
+        VALUES('AUA', 'AUSTRALIAN AIRLINE', 'AU');
 
     INSERT INTO airlines(airline_code, name, nationality)
-        VALUES('CA', 'CANADIAN AIRLINE', 'CA');
+        VALUES('CAA', 'CANADIAN AIRLINE', 'CA');
+
+    INSERT INTO airlines(airline_code, name, nationality)
+        VALUES('FRA', 'FRANCE AIRLINE', 'FR');
+
+    INSERT INTO airlines(airline_code, name, nationality)
+        VALUES('TRA', 'TURKEY AIRLINE', 'TR');
+
+    INSERT INTO airlines(airline_code, name, nationality)
+        VALUES('CZA', 'CZECH AIRLINE', 'CZ');
 
     -- AIRCRAFTS
     INSERT INTO aircrafts(type, model, airline_code)
-        VALUES('Boeing', '737 MAX', 'KA');
+        VALUES('Boeing', '737 MAX', 'UKA');
 
     INSERT INTO aircrafts(type, model, airline_code)
-        VALUES('Airbus', 'A3xx', 'UA');
+        VALUES('Airbus', 'A3xx', 'USA');
 
     INSERT INTO aircrafts(type, model, airline_code)
-        VALUES('Airbus', 'A350', 'CA');
+        VALUES('Airbus', 'A350', 'CAA');
 
     INSERT INTO aircrafts(type, model, airline_code)
-        VALUES('Boeing', '200LR', 'KA');
+        VALUES('Boeing', '200LR', 'UKA');
 
     INSERT INTO aircrafts(type, model, airline_code)
-        VALUES('Airbus', 'A300', 'AA');
+        VALUES('Airbus', 'A300', 'AUA');
 
     INSERT INTO aircrafts(type, model, airline_code)
-        VALUES('Boeing', '200LR', 'UA');
+        VALUES('Boeing', '200LR', 'USA');
 
     INSERT INTO aircrafts(type, model, airline_code)
-        VALUES('Boeing', '737 MAX', 'AA');
+        VALUES('Boeing', '737 MAX', 'AUA');
 
     INSERT INTO aircrafts(type, model, airline_code)
-        VALUES('Airbus', 'A318', 'FA');
+        VALUES('Airbus', 'A318', 'FRA');
 
     INSERT INTO aircrafts(type, model, airline_code)
-        VALUES('Boeing', '777', 'FA');
+        VALUES('Boeing', '777', 'TRA');
 
     INSERT INTO aircrafts(type, model, airline_code)
-        VALUES('Boeing', '787', 'CA');
+        VALUES('Boeing', '787', 'CZA');
 
     -- FLIGHT TICKETS
     INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
@@ -216,7 +225,7 @@
                TIMESTAMP'2022-03-20 09:05:00.00 +01:00',
                TIMESTAMP'2022-03-20 10:55:00 +01:00',
                1,
-               'FA',
+               'FIA',
                100,
                'TKU',
                'LHR',
@@ -228,7 +237,7 @@
                TIMESTAMP'2022-03-21 10:25:00.00 +01:00',
                TIMESTAMP'2022-03-21 10:50:00.00 +01:00',
                2,
-               'UA',
+               'USA',
                50,
                'JFK',
                'YOW',
@@ -240,7 +249,7 @@
                TIMESTAMP'2022-03-23 15:35:00.00 +01:00',
                TIMESTAMP'2022-03-24 11:35:00.00 +02:00',
                3,
-               'AA',
+               'AUA',
                200,
                'SYD',
                'JFK',
@@ -252,7 +261,7 @@
                 TIMESTAMP'2022-03-27 19:45:00.00 +05:00',
                 TIMESTAMP'2022-03-20 17:10:00 +05:00',
                 4,
-                'CA',
+                'CAA',
                 300,
                 'YOW',
                 'TKU',
@@ -264,7 +273,7 @@
                 TIMESTAMP'2022-03-29 07:00:00.00 -01:00',
                 TIMESTAMP'2022-03-30 02:35:00.00 +01:00',
                 5,
-                'KA',
+                'UKA',
                 375,
                 'LHR',
                 'SYD',
@@ -276,7 +285,7 @@
 -- SELECT NAME, AIRLINE_CODE FROM AIRCRAFTS NATURAL JOIN AIRLINES WHERE
 --     type = 'Boeing';
 
--- SELECT L.NAME, P.NAME, CITY FROM AIRLINES L, AIRPORTS P WHERE
+-- SELECT L.NAME, CITY, P.NAME FROM AIRLINES L, AIRPORTS P WHERE
 --     L.NATIONALITY = P.COUNTRY;
 
 -- SELECT FLIGHT_CODE, DEP_LOC, FIRST_NAME, LAST_NAME FROM FLIGHT_TICKETS F, RESERVATIONS R, CUSTOMERS C  WHERE
