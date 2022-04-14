@@ -170,13 +170,31 @@
         VALUES(0, TIMESTAMP'2022-03-16 07:13:11', 2);
 
     INSERT INTO reservations(payment_status, created_at, owner)
-        VALUES(1, TIMESTAMP'2022-03-20 02:01:58', 3);
+        VALUES(1, TIMESTAMP'2022-03-18 12:37:42', 3);
 
     INSERT INTO reservations(payment_status, created_at, owner)
-        VALUES(0, TIMESTAMP'2022-03-18 12:37:42', 4);
+        VALUES(1, TIMESTAMP'2022-03-20 21:56:22', 4);
 
     INSERT INTO reservations(payment_status, created_at, owner)
         VALUES(1, TIMESTAMP'2022-03-20 21:56:22', 5);
+
+    INSERT INTO reservations(payment_status, created_at, owner)
+        VALUES(0, TIMESTAMP'2022-03-08 23:59:42', 6);
+
+    INSERT INTO reservations(payment_status, created_at, owner)
+        VALUES(1, TIMESTAMP'2022-03-02 08:37:03', 7);
+
+    INSERT INTO reservations(payment_status, created_at, owner)
+        VALUES(0, TIMESTAMP'2022-03-06 13:48:12', 8);
+
+    INSERT INTO reservations(payment_status, created_at, owner)
+        VALUES(1, TIMESTAMP'2022-03-20 21:56:22', 9);
+
+    INSERT INTO reservations(payment_status, created_at, owner)
+        VALUES(0, TIMESTAMP'2022-03-14 19:58:26', 10);
+
+    INSERT INTO reservations(payment_status, created_at, owner)
+        VALUES(1, TIMESTAMP'2022-03-28 03:45:02', 11);
 
     -- AIRLINES
     INSERT INTO airlines(airline_code, name, nationality)
@@ -274,7 +292,7 @@
     INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
         VALUES('EQ1337',
                 TIMESTAMP'2022-03-27 19:45:00',
-                TIMESTAMP'2022-03-20 17:10:00',
+                TIMESTAMP'2022-03-27 17:10:00',
                 4,
                 'CAA',
                 300,
@@ -296,6 +314,79 @@
                 5,
                 5);
 
+    INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
+        VALUES('EQ1337',
+                TIMESTAMP'2022-03-27 00:45:00',
+                TIMESTAMP'2022-03-27 02:10:00',
+                6,
+                'FRA',
+                834,
+                'CDG',
+                'IST',
+                '17D',
+                6,
+                6);
+
+    INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
+        VALUES('KC8475',
+                TIMESTAMP'2022-03-29 20:00:00',
+                TIMESTAMP'2022-03-30 00:12:00',
+                7,
+                'TRA',
+                538,
+                'IST',
+                'PRG',
+                '09C',
+                7,
+                7);
+    INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
+        VALUES('EQ1337',
+                TIMESTAMP'2022-03-19 23:45:00',
+                TIMESTAMP'2022-03-20 07:10:00',
+                8,
+                'CZA',
+                566,
+                'PRG',
+                'LHR',
+                '29B',
+                8,
+                8);
+    INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
+        VALUES('UI2020',
+                TIMESTAMP'2022-03-29 00:00:01',
+                TIMESTAMP'2022-03-29 03:35:00',
+                9,
+                'CZA',
+                386,
+                'PRG',
+                'YOW',
+                '01I',
+                9,
+                9);
+    INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
+        VALUES('EQ1337',
+                TIMESTAMP'2022-03-20 01:45:00',
+                TIMESTAMP'2022-03-20 07:10:00',
+                10,
+                'AUA',
+                284,
+                'SYD',
+                'IST',
+                '34B',
+                10,
+                10);
+    INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
+        VALUES('UI2020',
+                TIMESTAMP'2022-03-29 02:00:00',
+                TIMESTAMP'2022-03-29 07:35:00',
+                1,
+                'AUA',
+                925,
+                'SYD',
+                'JFK',
+                '11A',
+                11,
+                11);
 
 -- SELECT DISTINCT NAME, AIRLINE_CODE FROM AIRCRAFTS NATURAL JOIN AIRLINES WHERE
 --     type = 'Boeing';
