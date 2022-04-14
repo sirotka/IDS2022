@@ -6,18 +6,23 @@
 --          Ekaterina Krupenko (xkrupe00)
 --          Alina Vinogradova  (xvinog00)
 
-
 -- Project part 2 - SQL script for creating basic database schema objects
 /*
-    Tables:
-        Customers
-        Flight tickets
-        Aircrafts
-        Airlines
+                Tables:
+                    Airlines
+                    Aircrafts
+                    Airports
+                    Customers
+                    Reservations
+                    Flight_tickets
  */
 
+/*
+                 PART ONE:
+                 SIMPLE SQL SCRIPT TO CREATE AND FILL TABLES
+*/
 
--- DELETE TABLE
+-- DELETE TABLES
 
     DROP TABLE FLIGHT_TICKETS;
     DROP TABLE AIRCRAFTS;
@@ -26,7 +31,7 @@
     DROP TABLE RESERVATIONS;
     DROP TABLE CUSTOMERS;
 
--- CREATE TABLE
+-- CREATE TABLES
 
     CREATE TABLE airlines (
         -- id according to IATA standard
@@ -94,7 +99,7 @@
         CONSTRAINT FK_TICKET_RESERVATION FOREIGN KEY (reservation_code) REFERENCES reservations(id)
     );
 
--- INSERT VALUES
+-- FILL TABLES
 
     -- CUSTOMERS
     INSERT INTO customers(first_name, last_name, email, street, town, post_code, user_country)
@@ -232,7 +237,7 @@
         VALUES('Airbus', 'A350', 'CAA');
 
     INSERT INTO aircrafts(type, model, airline_code)
-        VALUES('Boeing', '200LR', 'UKA');
+        VALUES('Boeing', '200LR', 'FRA');
 
     INSERT INTO aircrafts(type, model, airline_code)
         VALUES('Airbus', 'A300', 'AUA');
@@ -388,26 +393,80 @@
                 11,
                 11);
 
-SELECT DISTINCT NAME, AIRLINE_CODE, MODEL FROM AIRCRAFTS NATURAL JOIN AIRLINES WHERE
+/*
+                 PART TWO:
+                 SQL SELECTIONS USING DIFFERENT FUNCTIONS AND METHODS:
+                 - 2 queries using a join of two tables
+                 - 1 query using a join of three tables
+                 - 2 queries with GROUP BY clause and aggregation function
+                 - 1 query containing the predicate EXISTS
+                 - 1 query with IN predicate with nested SELECT
+*/
+
+
+-- #1: Shows the names of airlines that have registered Boeing aircraft
+--     also specifying the particular model.
+
+--     Using NATURAL JOIN, the AIRCRAFT and AIRLINES tables are joined
+--     into a common table, from which only those rows where the Boeing
+--     aircraft type exists are selected. As a result, only the name of
+--     the airline and the specific model of the plane are shown.
+SELECT DISTINCT NAME, MODEL FROM AIRCRAFTS NATURAL JOIN AIRLINES WHERE
     type = 'Boeing';
 
-SELECT FIRST_NAME, LAST_NAME, DEP_LOC DEPARTURE_LOCATION, TO_CHAR(DEP_TIME, 'YYYY-MM-DD HH24:MI') DEPARTURE_TIME FROM CUSTOMERS C, FLIGHT_TICKETS F WHERE
-    C.ID = F.PASSENGER AND USER_COUNTRY = 'FI' ;
+-- #2: Shows the airports and departure times of all Finnish citizens
+--     who have a valid ticket.
 
--- to find out user first, last name and ticket code if he has payed for a reservation
+--     Using the existing key (ID in the CUSTOMERS table and
+--     PASSENGER in the FLIGHT_TICKETS table), two tables are connected
+--     and only those rows are being selected, that match the condition
+--     (USER_COUNTRY = 'FI') that the user must be from Finland.
+--     As a result the data about where and at what time passengers
+--     from Finland will fly are shown.
+SELECT FIRST_NAME, LAST_NAME, DEP_LOC DEPARTURE_LOCATION, TO_CHAR(DEP_TIME, 'YYYY-MM-DD HH24:MI') DEPARTURE_TIME FROM CUSTOMERS, FLIGHT_TICKETS WHERE
+    ID = PASSENGER AND USER_COUNTRY = 'FI' ;
+
+-- #3: Shows the user's name and surname and the code
+--     of the flight whose reservation was paid by the user
+
+--     The three tables are connected through keys. Only those values
+--     of the final joined table are selected that are known to have been paid for
 SELECT FLIGHT_CODE, FIRST_NAME, LAST_NAME FROM FLIGHT_TICKETS F, RESERVATIONS R, CUSTOMERS C  WHERE
     F.RESERVATION_CODE = R.ID AND
     R.OWNER = C.ID AND
     R.PAYMENT_STATUS = 1;
 
+-- #4: Shows how many users are registered with each country
+
+--     Using GROUP BY, we specify what we want to aggregate
+--     according to the USER_COUNTRY column. ORDER BY determines
+--     the sorting of the table by the first column (COUNT)
 SELECT COUNT(ID) COUNT, USER_COUNTRY FROM CUSTOMERS GROUP BY USER_COUNTRY ORDER BY COUNT;
 
-SELECT AIRLINE, SUM(PRICE) PRICE_SUM FROM FLIGHT_TICKETS GROUP BY AIRLINE ORDER BY SUM(PRICE) DESC;
+-- #5: Shows the total price of all reservations made at one time
 
+--     Use GROUP BY to designate the CREATED_AT variable,
+--     which will be used to aggregate the table connected
+--     from FLIGHT_TICKETS and RESERVATIONS. Use ORDER BY to sort
+--     the table from the RESERVATION_DATE variable, which was
+--     previously converted to CHAR from TIMESTAMP CREATED_AT
+SELECT TO_CHAR(CREATED_AT, 'YYYY-MM-DD HH24:MI:SS') RESERVATION_DATE, SUM(PRICE) SUM FROM FLIGHT_TICKETS, RESERVATIONS WHERE
+    RESERVATION_CODE = ID
+    GROUP BY CREATED_AT
+    ORDER BY RESERVATION_DATE;
+
+-- #6: Shows all existing users who, according to their place of residence,
+--     live in a city that also has an airport
+
+--     EXISTS checks if there is at least one row in the AIRPORTS table
+--     with a CITY value equal to the TOWN value from the CUSTOMERS table.
+--     If such a row exists, the customer's data from that row goes into SELECT
 SELECT FIRST_NAME, LAST_NAME, TOWN FROM CUSTOMERS WHERE EXISTS(
     SELECT * FROM AIRPORTS WHERE TOWN = CITY);
 
-SELECT NAME FROM AIRLINES WHERE EXISTS(
-    SELECT FLIGHT_CODE FROM FLIGHT_TICKETS WHERE
-        AIRLINE = AIRLINE_CODE AND ARR_LOC IN (
-            SELECT AIRPORT_CODE FROM AIRPORTS WHERE CITY = 'Ottawa'))
+-- #7: Shows the current list of airlines by codes flying to Ottawa
+
+--     IN determines the city in which the plane arrives.
+--     The construct can be useful when there may be several different airports in one city
+SELECT AIRLINE FROM FLIGHT_TICKETS WHERE
+        ARR_LOC IN (SELECT AIRPORT_CODE FROM AIRPORTS WHERE CITY = 'Ottawa')
