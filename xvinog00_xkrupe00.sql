@@ -192,7 +192,7 @@
         VALUES('Boeing', '200LR', 'KA');
 
     INSERT INTO aircrafts(type, model, airline_code)
-        VALUES('Airbus', 'e.g.', 'AA');
+        VALUES('Airbus', 'A300', 'AA');
 
     INSERT INTO aircrafts(type, model, airline_code)
         VALUES('Boeing', '200LR', 'UA');
@@ -272,8 +272,11 @@
                 5);
 
 
+-- SELECT NAME, AIRLINE_CODE FROM AIRCRAFTS NATURAL JOIN AIRLINES WHERE
+--     type = 'Boeing';
 
 -- SELECT FLIGHT_CODE, DEP_LOC, FIRST_NAME, LAST_NAME FROM FLIGHT_TICKETS F, RESERVATIONS R, CUSTOMERS C  WHERE
 --     F.RESERVATION_CODE = R.ID AND
 --     R.OWNER = C.ID AND
 --     R.PAYMENT_STATUS = 1;
+
