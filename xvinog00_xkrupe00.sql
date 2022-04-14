@@ -170,7 +170,7 @@
         VALUES(0, TIMESTAMP'2022-03-16 07:13:11', 2);
 
     INSERT INTO reservations(payment_status, created_at, owner)
-        VALUES(1, TIMESTAMP'2022-03-18 12:37:42', 3);
+        VALUES(1, TIMESTAMP'2022-03-28 03:45:02', 3);
 
     INSERT INTO reservations(payment_status, created_at, owner)
         VALUES(1, TIMESTAMP'2022-03-20 21:56:22', 4);
@@ -302,20 +302,20 @@
                 4,
                 4);
     INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
-        VALUES('UI2020',
+        VALUES('UI2030',
                 TIMESTAMP'2022-03-29 07:00:00',
                 TIMESTAMP'2022-03-30 02:35:00',
                 5,
                 'UKA',
                 375,
                 'LHR',
-                'SYD',
+                'YOW',
                 '22E',
                 5,
                 5);
 
     INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
-        VALUES('EQ1337',
+        VALUES('EQ1347',
                 TIMESTAMP'2022-03-27 00:45:00',
                 TIMESTAMP'2022-03-27 02:10:00',
                 6,
@@ -340,7 +340,7 @@
                 7,
                 7);
     INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
-        VALUES('EQ1337',
+        VALUES('EF1537',
                 TIMESTAMP'2022-03-19 23:45:00',
                 TIMESTAMP'2022-03-20 07:10:00',
                 8,
@@ -352,7 +352,7 @@
                 8,
                 8);
     INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
-        VALUES('UI2020',
+        VALUES('EG2214',
                 TIMESTAMP'2022-03-29 00:00:01',
                 TIMESTAMP'2022-03-29 03:35:00',
                 9,
@@ -364,7 +364,7 @@
                 9,
                 9);
     INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
-        VALUES('EQ1337',
+        VALUES('IP2415',
                 TIMESTAMP'2022-03-20 01:45:00',
                 TIMESTAMP'2022-03-20 07:10:00',
                 10,
@@ -376,7 +376,7 @@
                 10,
                 10);
     INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
-        VALUES('UI2020',
+        VALUES('GF5169',
                 TIMESTAMP'2022-03-29 02:00:00',
                 TIMESTAMP'2022-03-29 07:35:00',
                 1,
@@ -388,16 +388,26 @@
                 11,
                 11);
 
--- SELECT DISTINCT NAME, AIRLINE_CODE FROM AIRCRAFTS NATURAL JOIN AIRLINES WHERE
---     type = 'Boeing';
+SELECT DISTINCT NAME, AIRLINE_CODE, MODEL FROM AIRCRAFTS NATURAL JOIN AIRLINES WHERE
+    type = 'Boeing';
 
--- SELECT L.NAME, CITY, P.NAME FROM AIRLINES L, AIRPORTS P WHERE
---     L.NATIONALITY = P.COUNTRY;
+SELECT FIRST_NAME, LAST_NAME, DEP_LOC DEPARTURE_LOCATION, TO_CHAR(DEP_TIME, 'YYYY-MM-DD HH24:MI') DEPARTURE_TIME FROM CUSTOMERS C, FLIGHT_TICKETS F WHERE
+    C.ID = F.PASSENGER AND USER_COUNTRY = 'FI' ;
 
 -- to find out user first, last name and ticket code if he has payed for a reservation
--- SELECT FLIGHT_CODE, DEP_LOC, FIRST_NAME, LAST_NAME FROM FLIGHT_TICKETS F, RESERVATIONS R, CUSTOMERS C  WHERE
---     F.RESERVATION_CODE = R.ID AND
---     R.OWNER = C.ID AND
---     R.PAYMENT_STATUS = 1;
+SELECT FLIGHT_CODE, FIRST_NAME, LAST_NAME FROM FLIGHT_TICKETS F, RESERVATIONS R, CUSTOMERS C  WHERE
+    F.RESERVATION_CODE = R.ID AND
+    R.OWNER = C.ID AND
+    R.PAYMENT_STATUS = 1;
 
--- SELECT COUNT(ID) COUNT, USER_COUNTRY FROM CUSTOMERS GROUP BY USER_COUNTRY ORDER BY COUNT;
+SELECT COUNT(ID) COUNT, USER_COUNTRY FROM CUSTOMERS GROUP BY USER_COUNTRY ORDER BY COUNT;
+
+SELECT AIRLINE, SUM(PRICE) PRICE_SUM FROM FLIGHT_TICKETS GROUP BY AIRLINE ORDER BY SUM(PRICE) DESC;
+
+SELECT FIRST_NAME, LAST_NAME, TOWN FROM CUSTOMERS WHERE EXISTS(
+    SELECT * FROM AIRPORTS WHERE TOWN = CITY);
+
+SELECT NAME FROM AIRLINES WHERE EXISTS(
+    SELECT FLIGHT_CODE FROM FLIGHT_TICKETS WHERE
+        AIRLINE = AIRLINE_CODE AND ARR_LOC IN (
+            SELECT AIRPORT_CODE FROM AIRPORTS WHERE CITY = 'Ottawa'))
