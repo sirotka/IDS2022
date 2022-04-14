@@ -31,7 +31,8 @@
     CREATE TABLE airlines (
         -- id according to IATA standard
         airline_code VARCHAR(2) NOT NULL PRIMARY KEY CHECK(REGEXP_LIKE(airline_code,'[A-Z0-9]{2}')),
-        name VARCHAR(128) NOT NULL
+        name VARCHAR(128) NOT NULL,
+        nationality VARCHAR(2) NOT NULL
     );
 
     CREATE TABLE aircrafts (
@@ -163,20 +164,20 @@
         VALUES(1, TIMESTAMP'2022-03-20 21:56:22.00', 5);
 
     -- AIRLINES
-    INSERT INTO airlines(airline_code, name)
-        VALUES('FA', 'FINLAND AIRLINE');
+    INSERT INTO airlines(airline_code, name, nationality)
+        VALUES('FA', 'FINLAND AIRLINE', 'FI');
 
-    INSERT INTO airlines(airline_code, name)
-        VALUES('UA', 'USA AIRLINE');
+    INSERT INTO airlines(airline_code, name, nationality)
+        VALUES('UA', 'USA AIRLINE', 'US');
 
-    INSERT INTO airlines(airline_code, name)
-        VALUES('KA', 'UK AIRLINE');
+    INSERT INTO airlines(airline_code, name, nationality)
+        VALUES('KA', 'UK AIRLINE', 'UK');
 
-    INSERT INTO airlines(airline_code, name)
-        VALUES('AA', 'AUSTRALIAN AIRLINE');
+    INSERT INTO airlines(airline_code, name, nationality)
+        VALUES('AA', 'AUSTRALIAN AIRLINE', 'AU');
 
-    INSERT INTO airlines(airline_code, name)
-        VALUES('CA', 'CANADIAN AIRLINE');
+    INSERT INTO airlines(airline_code, name, nationality)
+        VALUES('CA', 'CANADIAN AIRLINE', 'CA');
 
     -- AIRCRAFTS
     INSERT INTO aircrafts(type, model, airline_code)
@@ -274,6 +275,9 @@
 
 -- SELECT NAME, AIRLINE_CODE FROM AIRCRAFTS NATURAL JOIN AIRLINES WHERE
 --     type = 'Boeing';
+
+-- SELECT L.NAME, P.NAME, CITY FROM AIRLINES L, AIRPORTS P WHERE
+--     L.NATIONALITY = P.COUNTRY;
 
 -- SELECT FLIGHT_CODE, DEP_LOC, FIRST_NAME, LAST_NAME FROM FLIGHT_TICKETS F, RESERVATIONS R, CUSTOMERS C  WHERE
 --     F.RESERVATION_CODE = R.ID AND
