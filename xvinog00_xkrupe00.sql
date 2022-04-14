@@ -38,9 +38,9 @@
         aircraft_id NUMBER GENERATED AS IDENTITY NOT NULL PRIMARY KEY,
         type VARCHAR(128) NOT NULL,
         model VARCHAR(128) NOT NULL,
-        airline VARCHAR(2) NOT NULL,
+        airline_code VARCHAR(2) NOT NULL,
 
-        CONSTRAINT FK_AIRCRAFT_OWNER_AIRLINE FOREIGN KEY (airline) REFERENCES airlines(airline_code)
+        CONSTRAINT FK_AIRCRAFT_OWNER_AIRLINE FOREIGN KEY (airline_code) REFERENCES airlines(airline_code)
     );
 
     CREATE TABLE airports (
@@ -65,7 +65,7 @@
 
     CREATE TABLE reservations (
         id NUMBER GENERATED AS IDENTITY NOT NULL PRIMARY KEY,
-        status NUMBER NOT NULL CHECK(status = 0 or status = 1), -- true or false
+        payment_status NUMBER NOT NULL CHECK(payment_status = 0 or payment_status = 1), -- true or false
         created_at TIMESTAMP NOT NULL,
         owner NUMBER NOT NULL,
 
@@ -93,8 +93,9 @@
         CONSTRAINT FK_TICKET_RESERVATION FOREIGN KEY (reservation_code) REFERENCES reservations(id)
     );
 
---INSERT PART
+-- INSERT VALUES
 
+    -- CUSTOMERS
     INSERT INTO customers(first_name, last_name, email, street, town, post_code, user_country)
         VALUES('Leonardo', 'Blue', 'leotheleader@gmail.com', 'Bayport Lane', 'New York', 10461, 'US');
 
@@ -110,7 +111,17 @@
     INSERT INTO customers(first_name, last_name, email, street, town, post_code, user_country)
         VALUES('Splinter', 'Master', 'splintertherat@gmail.com', 'Hakulintie', 'Turku', 20210, 'FI');
 
+    INSERT INTO customers(first_name, last_name, email, street, town, post_code, user_country)
+        VALUES('Jean', 'Medeiros', 'maeve.spore1@hotmail.com', 'Gnatty Creek', 'New York', '11530', 'US');
 
+    INSERT INTO customers(first_name, last_name, email, street, town, post_code, user_country)
+        VALUES('Carlene', 'Bashaw', 'violette.schust@gmail.com', 'Woodland Avenue', 'Metairie', '70001', 'US');
+
+    INSERT INTO customers(first_name, last_name, email, street, town, post_code, user_country)
+        VALUES('Aceline', 'Baril', 'AcelineBaril@jourrapide.com', 'avenue Jules Ferry', 'Stains', '93240', 'FR');
+
+
+    -- AIRPORTS
     INSERT INTO airports(airport_code, name, city, country)
         VALUES('JFK', 'John F. Kennedy International Airport', 'New York', 'US');
 
@@ -126,24 +137,32 @@
     INSERT INTO airports(airport_code, name, city, country)
         VALUES('TKU', 'Turku Airport', 'Turku', 'FI');
 
+    INSERT INTO airports(airport_code, name, city, country)
+        VALUES('CDG', 'Paris Charles de Gaulle Airport', 'Paris', 'FR');
 
-    INSERT INTO reservations(status, created_at, owner)
+    INSERT INTO airports(airport_code, name, city, country)
+        VALUES('IST', 'Istanbul Airport', 'Istanbul', 'TR');
+
+    INSERT INTO airports(airport_code, name, city, country)
+        VALUES('PRG', 'Vaclav Havel Airport Prague', 'Prague', 'CZ');
+
+    -- RESERVATIONS
+    INSERT INTO reservations(payment_status, created_at, owner)
         VALUES(1, TIMESTAMP'2022-03-13 15:24:33.00', 1);
 
-    INSERT INTO reservations(status, created_at, owner)
+    INSERT INTO reservations(payment_status, created_at, owner)
         VALUES(0, TIMESTAMP'2022-03-16 07:13:11.00', 2);
 
-    INSERT INTO reservations(status, created_at, owner)
+    INSERT INTO reservations(payment_status, created_at, owner)
         VALUES(1, TIMESTAMP'2022-03-20 02:01:58.00', 3);
 
-    INSERT INTO reservations(status, created_at, owner)
+    INSERT INTO reservations(payment_status, created_at, owner)
         VALUES(0, TIMESTAMP'2022-03-18 12:37:42.00', 4);
 
-    INSERT INTO reservations(status, created_at, owner)
+    INSERT INTO reservations(payment_status, created_at, owner)
         VALUES(1, TIMESTAMP'2022-03-20 21:56:22.00', 5);
 
-
-
+    -- AIRLINES
     INSERT INTO airlines(airline_code, name)
         VALUES('FA', 'FINLAND AIRLINE');
 
@@ -159,27 +178,42 @@
     INSERT INTO airlines(airline_code, name)
         VALUES('CA', 'CANADIAN AIRLINE');
 
-
-    INSERT INTO aircrafts(type, model, airline)
+    -- AIRCRAFTS
+    INSERT INTO aircrafts(type, model, airline_code)
         VALUES('Boeing', '737 MAX', 'KA');
 
-    INSERT INTO aircrafts(type, model, airline)
+    INSERT INTO aircrafts(type, model, airline_code)
         VALUES('Airbus', 'A3xx', 'UA');
 
-    INSERT INTO aircrafts(type, model, airline)
+    INSERT INTO aircrafts(type, model, airline_code)
         VALUES('Airbus', 'A350', 'CA');
 
-    INSERT INTO aircrafts(type, model, airline)
+    INSERT INTO aircrafts(type, model, airline_code)
         VALUES('Boeing', '200LR', 'KA');
 
-    INSERT INTO aircrafts(type, model, airline)
+    INSERT INTO aircrafts(type, model, airline_code)
         VALUES('Airbus', 'e.g.', 'AA');
 
+    INSERT INTO aircrafts(type, model, airline_code)
+        VALUES('Boeing', '200LR', 'UA');
 
+    INSERT INTO aircrafts(type, model, airline_code)
+        VALUES('Boeing', '737 MAX', 'AA');
+
+    INSERT INTO aircrafts(type, model, airline_code)
+        VALUES('Airbus', 'A318', 'FA');
+
+    INSERT INTO aircrafts(type, model, airline_code)
+        VALUES('Boeing', '777', 'FA');
+
+    INSERT INTO aircrafts(type, model, airline_code)
+        VALUES('Boeing', '787', 'CA');
+
+    -- FLIGHT TICKETS
     INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
         VALUES('BA2490',
                TIMESTAMP'2022-03-20 09:05:00.00 +01:00',
-               TIMESTAMP'2022-03-20 10:55:00 -02:00',
+               TIMESTAMP'2022-03-20 10:55:00 +01:00',
                1,
                'FA',
                100,
@@ -191,7 +225,7 @@
     INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
         VALUES('RG2700',
                TIMESTAMP'2022-03-21 10:25:00.00 +01:00',
-               TIMESTAMP'2022-03-21 13:50:00.00 -06:00',
+               TIMESTAMP'2022-03-21 10:50:00.00 +01:00',
                2,
                'UA',
                50,
@@ -202,7 +236,7 @@
                2);
     INSERT INTO flight_tickets(flight_code, dep_time, arr_time, aircraft, airline, price, dep_loc, arr_loc, seat_number, passenger, reservation_code)
         VALUES('SD1489',
-               TIMESTAMP'2022-03-23 15:35:00.00 +00:00',
+               TIMESTAMP'2022-03-23 15:35:00.00 +01:00',
                TIMESTAMP'2022-03-24 11:35:00.00 +02:00',
                3,
                'AA',
@@ -236,3 +270,10 @@
                 '22E',
                 5,
                 5);
+
+
+
+-- SELECT FLIGHT_CODE, DEP_LOC, FIRST_NAME, LAST_NAME FROM FLIGHT_TICKETS F, RESERVATIONS R, CUSTOMERS C  WHERE
+--     F.RESERVATION_CODE = R.ID AND
+--     R.OWNER = C.ID AND
+--     R.PAYMENT_STATUS = 1;
