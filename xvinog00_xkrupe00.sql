@@ -113,13 +113,13 @@
         VALUES('Splinter', 'Master', 'splintertherat@gmail.com', 'Hakulintie', 'Turku', 20210, 'FI');
 
     INSERT INTO customers(first_name, last_name, email, street, town, post_code, user_country)
-        VALUES('Jean', 'Medeiros', 'maeve.spore1@hotmail.com', 'Gnatty Creek', 'New York', '11530', 'US');
+        VALUES('Jean', 'Medeiros', 'maeve.spore1@hotmail.com', 'Gnatty Creek', 'New York', 11530, 'US');
 
     INSERT INTO customers(first_name, last_name, email, street, town, post_code, user_country)
-        VALUES('Carlene', 'Bashaw', 'violette.schust@gmail.com', 'Woodland Avenue', 'Metairie', '70001', 'US');
+        VALUES('Carlene', 'Bashaw', 'violette.schust@gmail.com', 'Woodland Avenue', 'Metairie', 70001, 'US');
 
     INSERT INTO customers(first_name, last_name, email, street, town, post_code, user_country)
-        VALUES('Aceline', 'Baril', 'AcelineBaril@jourrapide.com', 'avenue Jules Ferry', 'Stains', '93240', 'FR');
+        VALUES('Aceline', 'Baril', 'AcelineBaril@jourrapide.com', 'avenue Jules Ferry', 'Stains', 93240, 'FR');
 
 
     -- AIRPORTS
@@ -288,6 +288,7 @@
 -- SELECT L.NAME, CITY, P.NAME FROM AIRLINES L, AIRPORTS P WHERE
 --     L.NATIONALITY = P.COUNTRY;
 
+-- to find out user first, last name and ticket code if he has payed for a reservation
 -- SELECT FLIGHT_CODE, DEP_LOC, FIRST_NAME, LAST_NAME FROM FLIGHT_TICKETS F, RESERVATIONS R, CUSTOMERS C  WHERE
 --     F.RESERVATION_CODE = R.ID AND
 --     R.OWNER = C.ID AND
