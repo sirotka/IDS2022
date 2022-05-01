@@ -394,7 +394,7 @@
                 11);
 
 /*
-                 PART TWO:
+                 PART 3:
                  SQL SELECTIONS USING DIFFERENT FUNCTIONS AND METHODS:
                  - 2 queries using a join of two tables
                  - 1 query using a join of three tables
@@ -470,3 +470,13 @@ SELECT FIRST_NAME, LAST_NAME, TOWN FROM CUSTOMERS WHERE EXISTS(
 --     The construct can be useful when there may be several different airports in one city
 SELECT AIRLINE FROM FLIGHT_TICKETS WHERE
         ARR_LOC IN (SELECT AIRPORT_CODE FROM AIRPORTS WHERE CITY = 'Ottawa')
+
+/*
+                 PART 4:
+                 SQL SCRIPT FOR CREATING ADVANCED DATABASE SCHEMA OBJECTS:
+                 - 2 non-trivial database triggers including their demonstration
+                 - 2 non-trivial stored procedures including their demonstration
+                   (with at least one: cursor, exception handling and use of a
+                    variable with a data type referring to a table row or column type)
+                 -
+*/
