@@ -3,8 +3,8 @@
 -- Project name: Ticket reservation.
 
 -- Authors:
---          Ekaterina Krupenko (xkrupe00)
---          Alina Vinogradova  (xvinog00)
+--          Ekaterina Krupenko (XKRUPE00)
+--          Alina Vinogradova  (XVINOG00)
 
 -- Project part 2 - SQL script for creating basic database schema objects
 /*
@@ -18,7 +18,7 @@
  */
 
 /*
-                 PART ONE:
+                 PART 1:
                  SIMPLE SQL SCRIPT TO CREATE AND FILL TABLES
 */
 
@@ -478,5 +478,10 @@ SELECT AIRLINE FROM FLIGHT_TICKETS WHERE
                  - 2 non-trivial stored procedures including their demonstration
                    (with at least one: cursor, exception handling and use of a
                     variable with a data type referring to a table row or column type)
-                 -
+                 - Explicit creation of at least one index to help optimize query processing,
+                   while also specifying the query affected by the index
+                 - 1 use of EXPLAIN PLAN to list the execution plan of a database query
+                   with a join of at least two tables, an aggregation function and a GROUP BY clause
+                 - definition of access rights to database objects for the other team member
+                 - 1 materialized view belonging to a second team member and using tables defined by the first team member
 */
