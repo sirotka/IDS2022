@@ -3,8 +3,8 @@
 -- Project name: Ticket reservation.
 
 -- Authors:
---          Ekaterina Krupenko (XKRUPE00)
---          Alina Vinogradova  (XVINOG00)
+--          Ekaterina Krupenko (xkrupe00)
+--          Alina Vinogradova  (xvinog00)
 
 -- Project part 2 - SQL script for creating basic database schema objects
 /*
@@ -18,7 +18,7 @@
  */
 
 /*
-                 PART 1:
+                 PART ONE:
                  SIMPLE SQL SCRIPT TO CREATE AND FILL TABLES
 */
 
@@ -31,7 +31,11 @@
     DROP TABLE RESERVATIONS;
     DROP TABLE CUSTOMERS;
 
+DROP SEQUENCE flight_ticket_id;
+CREATE SEQUENCE flight_ticket_id START WITH 1 INCREMENT BY 1 NOCYCLE;
+
 -- CREATE TABLES
+
 
     CREATE TABLE airlines (
         -- id according to IATA standard
@@ -75,11 +79,13 @@
         created_at TIMESTAMP NOT NULL,
         owner NUMBER NOT NULL,
 
+
         CONSTRAINT FK_RESERVATION_OWNER FOREIGN KEY(owner) REFERENCES customers(id)
     );
 
     CREATE TABLE flight_tickets (
-        flight_code VARCHAR(6) NOT NULL PRIMARY KEY CHECK(REGEXP_LIKE(flight_code, '[0-9a-zA-Z]{2}[0-9]{4}')),
+        id NUMBER NOT NULL PRIMARY KEY,
+        flight_code VARCHAR(6) NOT NULL CHECK(REGEXP_LIKE(flight_code, '[0-9a-zA-Z]{2}[0-9]{4}')),
         dep_time TIMESTAMP WITH TIME ZONE NOT NULL,
         arr_time TIMESTAMP WITH TIME ZONE NOT NULL,
         aircraft NUMBER NOT NULL,
@@ -98,6 +104,38 @@
         CONSTRAINT FK_TICKET_CREATOR FOREIGN KEY(airline) REFERENCES airlines(airline_code),
         CONSTRAINT FK_TICKET_RESERVATION FOREIGN KEY (reservation_code) REFERENCES reservations(id)
     );
+
+-- TRIGGER
+
+-- Automatically generate primary key for flight_trig
+
+CREATE OR REPLACE TRIGGER flight_trig BEFORE
+    INSERT ON flight_tickets
+	FOR EACH ROW
+    WHEN(NEW.id IS NULL)
+    BEGIN
+        SELECT flight_ticket_id.NEXTVAL
+        INTO : NEW.id
+        FROM dual;
+    END;
+
+
+CREATE OR REPLACE TRIGGER reservation_trig
+	BEFORE INSERT OR UPDATE OF reservation_code, dep_time ON flight_tickets
+	FOR EACH ROW
+DECLARE
+    reservation_time   TIMESTAMP;
+BEGIN
+    SELECT created_at INTO reservation_time FROM reservations WHERE reservations.id = :NEW.reservation_code;
+
+    IF
+        (dep_time < reservation_time)
+    THEN
+        dbms_output.put_line('Reservation has an outdated ticket.');
+    END IF;
+
+END;
+
 
 -- FILL TABLES
 
@@ -168,8 +206,9 @@
         VALUES('PRG', 'Vaclav Havel Airport Prague', 'Prague', 'CZ');
 
     -- RESERVATIONS
+--ispravitt
     INSERT INTO reservations(payment_status, created_at, owner)
-        VALUES(1, TIMESTAMP'2022-03-13 15:24:33', 1);
+        VALUES(1, TIMESTAMP'2022-03-21 15:24:33', 1);
 
     INSERT INTO reservations(payment_status, created_at, owner)
         VALUES(0, TIMESTAMP'2022-03-16 07:13:11', 2);
@@ -478,10 +517,5 @@ SELECT AIRLINE FROM FLIGHT_TICKETS WHERE
                  - 2 non-trivial stored procedures including their demonstration
                    (with at least one: cursor, exception handling and use of a
                     variable with a data type referring to a table row or column type)
-                 - Explicit creation of at least one index to help optimize query processing,
-                   while also specifying the query affected by the index
-                 - 1 use of EXPLAIN PLAN to list the execution plan of a database query
-                   with a join of at least two tables, an aggregation function and a GROUP BY clause
-                 - definition of access rights to database objects for the other team member
-                 - 1 materialized view belonging to a second team member and using tables defined by the first team member
+                 -
 */
