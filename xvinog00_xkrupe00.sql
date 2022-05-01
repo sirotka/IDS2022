@@ -62,7 +62,7 @@
         id NUMBER GENERATED AS IDENTITY NOT NULL PRIMARY KEY,
         first_name VARCHAR(128) NOT NULL,
         last_name VARCHAR(128) NOT NULL,
-        email VARCHAR(128) NOT NULL,
+        email VARCHAR(128) NOT NULL CHECK(REGEXP_LIKE(email, '^[a-z]+[a-z0-9\.]*@[a-z0-9\.-]+\.[a-z]{2,}$', 'i')),
         street VARCHAR(128) NOT NULL,
         town VARCHAR(128) NOT NULL,
         post_code NUMBER NOT NULL,
@@ -106,7 +106,7 @@
         VALUES('Leonardo', 'Blue', 'leotheleader@gmail.com', 'Bayport Lane', 'New York', 10461, 'US');
 
     INSERT INTO customers(first_name, last_name, email, street, town, post_code, user_country)
-        VALUES('Raphael', 'Red', 'raphtherebel@gmail.com', 'Cemetery Dr.', 'Waltham', 02453, 'GB');
+        VALUES('Raphael', 'Red', 'raphtherebel@mail.uk', 'Cemetery Dr.', 'Waltham', 02453, 'GB');
 
     INSERT INTO customers(first_name, last_name, email, street, town, post_code, user_country)
         VALUES('Donatello', 'Purple', 'donnythenerd@gmail.com', 'Maintongoon Road', 'Vesper', 3833, 'AU');
@@ -486,6 +486,29 @@ SELECT AIRLINE FROM FLIGHT_TICKETS WHERE
                  - 1 materialized view belonging to a second team member and using tables defined by the first team member
 */
 
+CREATE OR REPLACE PROCEDURE "ticket_avg_cost" AS
+    "tickets_count" NUMBER;
+    "tickets_sum_cost" NUMBER;
+    "avg_ticket_cost" NUMBER(8, 2); -- up to $999.999,99
+    BEGIN
+        SELECT COUNT(*) INTO "tickets_count" FROM flight_tickets;
+        SELECT SUM(price) INTO "tickets_sum_cost" FROM flight_tickets;
+
+        "avg_ticket_cost" := "tickets_sum_cost" / "tickets_count";
+
+        DBMS_OUTPUT.PUT_LINE('Tickets count: '|| "tickets_count"    || chr(13)||chr(10) ||
+                                ' Total amount: '|| "tickets_sum_cost" || chr(13)||chr(10) ||
+                                ' Average value per ticket: '|| "avg_ticket_cost" || chr(13)||chr(10));
+
+        EXCEPTION WHEN ZERO_DIVIDE THEN BEGIN
+            IF "tickets_count" = 0 THEN
+                DBMS_OUTPUT.PUT_LINE('No tickets were found');
+            END IF;
+        END;
+    END;
+
+BEGIN "ticket_avg_cost"; END;
+
 
 CREATE OR REPLACE PROCEDURE "aircrafts_in_airline"("airline_code_arg" IN VARCHAR) AS
     "all_aircrafts" NUMBER;
@@ -523,3 +546,13 @@ BEGIN "aircrafts_in_airline"('USA'); END;
 BEGIN "aircrafts_in_airline"('CAA'); END;
 BEGIN "aircrafts_in_airline"('FRA'); END;
 
+
+SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
+
+
+GRANT ALL ON FLIGHT_TICKETS TO XKRUPE00;
+GRANT ALL ON AIRCRAFTS TO XKRUPE00;
+GRANT ALL ON AIRLINES TO XKRUPE00;
+GRANT ALL ON AIRPORTS TO XKRUPE00;
+GRANT ALL ON RESERVATIONS TO XKRUPE00;
+GRANT ALL ON CUSTOMERS TO XKRUPE00;
