@@ -31,8 +31,10 @@
     DROP TABLE RESERVATIONS;
     DROP TABLE CUSTOMERS;
 
-DROP SEQUENCE flight_ticket_id;
-CREATE SEQUENCE flight_ticket_id START WITH 1 INCREMENT BY 1 NOCYCLE;
+    DROP SEQUENCE flight_ticket_id;
+
+
+    CREATE SEQUENCE flight_ticket_id START WITH 1 INCREMENT BY 1 NOCYCLE;
 
 -- CREATE TABLES
 
@@ -118,24 +120,6 @@ CREATE OR REPLACE TRIGGER flight_trig BEFORE
         INTO : NEW.id
         FROM dual;
     END;
-
-
-CREATE OR REPLACE TRIGGER reservation_trig
-	BEFORE INSERT OR UPDATE OF reservation_code, dep_time ON flight_tickets
-	FOR EACH ROW
-DECLARE
-    reservation_time   TIMESTAMP;
-BEGIN
-    SELECT created_at INTO reservation_time FROM reservations WHERE reservations.id = :NEW.reservation_code;
-
-    IF
-        (dep_time < reservation_time)
-    THEN
-        dbms_output.put_line('Reservation has an outdated ticket.');
-    END IF;
-
-END;
-
 
 -- FILL TABLES
 
@@ -516,8 +500,12 @@ SELECT AIRLINE FROM FLIGHT_TICKETS WHERE
                  - 2 non-trivial database triggers including their demonstration
                  - 2 non-trivial stored procedures including their demonstration
                    (with at least one: cursor, exception handling and use of a
-                    variable with a data type referring to a table row or column type)
-                 -
+                   variable with a data type referring to a table row or column type)
+                 - EXPLAIN PLAN for listing the execution plan of a database query
+                   with a join of at least two tables, an aggregation function and a GROUP BY clause
+                 - explicit creation of at least 1 index
+                 - definition of access rights to database objects for the other team member
+                 - 1 materialized view belonging to the other team member and using the tables defined by the first team member
 */
 
 CREATE OR REPLACE PROCEDURE "ticket_avg_cost" AS
