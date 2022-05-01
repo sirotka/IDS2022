@@ -531,6 +531,11 @@ SELECT AIRLINE FROM FLIGHT_TICKETS WHERE
                  - 1 materialized view belonging to the other team member and using the tables defined by the first team member
 */
 
+-- Demonstration of the first trigger
+SELECT id FROM flight_tickets;
+-- the operation of the second trigger is
+-- a message to output after 1 reservation
+-- where date is irrelevant
 
 CREATE OR REPLACE PROCEDURE "ticket_avg_cost" AS
     "tickets_count" NUMBER;
@@ -597,7 +602,17 @@ EXPLAIN PLAN FOR
 
 SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
 
---Materialized View
+DROP VIEW customers_from_xkrupe00;
+DROP MATERIALIZED VIEW customers_from_xkrupe00_mat;
+
+--DROP MATERIALIZED VIEW customers_from_xkrupe00;
+
+GRANT ALL ON FLIGHT_TICKETS TO XVINOG00;
+GRANT ALL ON AIRCRAFTS TO XVINOG00;
+GRANT ALL ON AIRLINES TO XVINOG00;
+GRANT ALL ON AIRPORTS TO XVINOG00;
+GRANT ALL ON RESERVATIONS TO XVINOG00;
+GRANT ALL ON CUSTOMERS TO XVINOG00;
 
 GRANT ALL ON FLIGHT_TICKETS TO XKRUPE00;
 GRANT ALL ON AIRCRAFTS TO XKRUPE00;
@@ -605,3 +620,23 @@ GRANT ALL ON AIRLINES TO XKRUPE00;
 GRANT ALL ON AIRPORTS TO XKRUPE00;
 GRANT ALL ON RESERVATIONS TO XKRUPE00;
 GRANT ALL ON CUSTOMERS TO XKRUPE00;
+
+-- Materialized View
+
+CREATE VIEW customers_from_xkrupe00 AS
+    SELECT aircraft_id FROM XKRUPE00.AIRCRAFTS WHERE
+    type = 'Boeing';
+
+CREATE MATERIALIZED VIEW customers_from_xkrupe00_mat AS
+    SELECT aircraft_id FROM XKRUPE00.AIRCRAFTS WHERE
+    type = 'Boeing';
+
+-- New aircraft for demonstration
+
+INSERT INTO XKRUPE00.AIRCRAFTS(type, model, airline_code)
+    VALUES ('Boeing', '200HT', 'AUA');
+
+-- Demonstration of Materialized View
+
+SELECT aircraft_id FROM customers_from_xkrupe00;
+SELECT aircraft_id FROM customers_from_xkrupe00_mat;
