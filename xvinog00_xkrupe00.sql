@@ -469,7 +469,7 @@ SELECT FIRST_NAME, LAST_NAME, TOWN FROM CUSTOMERS WHERE EXISTS(
 --     IN determines the city in which the plane arrives.
 --     The construct can be useful when there may be several different airports in one city
 SELECT AIRLINE FROM FLIGHT_TICKETS WHERE
-        ARR_LOC IN (SELECT AIRPORT_CODE FROM AIRPORTS WHERE CITY = 'Ottawa')
+        ARR_LOC IN (SELECT AIRPORT_CODE FROM AIRPORTS WHERE CITY = 'Ottawa');
 
 /*
                  PART 4:
@@ -485,3 +485,41 @@ SELECT AIRLINE FROM FLIGHT_TICKETS WHERE
                  - definition of access rights to database objects for the other team member
                  - 1 materialized view belonging to a second team member and using tables defined by the first team member
 */
+
+
+CREATE OR REPLACE PROCEDURE "aircrafts_in_airline"("airline_code_arg" IN VARCHAR) AS
+    "all_aircrafts" NUMBER;
+    "target_aircrafts" NUMBER := 0;
+    "airline_id" airlines.airline_code%TYPE;
+    "target_airline_id" airlines.airline_code%TYPE;
+
+    CURSOR "cursor_airlines" IS SELECT airline_code FROM AIRCRAFTS;
+    BEGIN
+        SELECT COUNT(*) INTO "all_aircrafts" FROM AIRCRAFTS;
+
+        SELECT airline_code INTO "target_airline_id" FROM AIRLINES WHERE airline_code = "airline_code_arg";
+
+        OPEN "cursor_airlines";
+        LOOP
+            FETCH "cursor_airlines" INTO "airline_id";
+            EXIT WHEN "cursor_airlines"%NOTFOUND;
+
+            IF "airline_id" = "target_airline_id" THEN
+                "target_aircrafts" := "target_aircrafts" + 1;
+            END IF;
+        END LOOP;
+        CLOSE "cursor_airlines";
+        DBMS_OUTPUT.PUT_LINE('Airline ' || "airline_code_arg" || ' has ' || "target_aircrafts" || ' aircraft(s) in total.');
+
+        EXCEPTION WHEN NO_DATA_FOUND THEN BEGIN
+            DBMS_OUTPUT.PUT_LINE('Airline '|| "airline_code_arg" || ' not found');
+        END;
+    END;
+
+-- Example outputs for 1. procedure
+-- shows the number of planes that are registered with the company with the code specified by the user
+
+BEGIN "aircrafts_in_airline"('USA'); END;
+BEGIN "aircrafts_in_airline"('CAA'); END;
+BEGIN "aircrafts_in_airline"('FRA'); END;
+
