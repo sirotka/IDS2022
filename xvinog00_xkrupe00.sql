@@ -110,9 +110,10 @@
 
 -- TRIGGER
 
--- First trigger automatically generates
--- ID for flight tickets
--- and uses increment in sequence flight_ticket_id
+-- First trigger automatically generates ID for flight_tickets
+-- uses increment in sequence flight_ticket_id
+-- when the line ID in flight_tickets table is empty
+-- trigger start filling empty ID with 1 increment by 1
 
 CREATE OR REPLACE TRIGGER flight_trig
     BEFORE INSERT
@@ -127,7 +128,11 @@ CREATE OR REPLACE TRIGGER flight_trig
 /
 
 -- The second trigger indicates that the reservation was outdated
+-- declares variables from flight_tickets (reservation_code,dep_time)
+-- declares the variable, equating a reservation date with the new variable
+-- finds a flight ticket by reservation id
 -- compare two dates, reservation date and flight date
+-- writes a message that the reservation was outdated
 
 CREATE OR REPLACE TRIGGER checking_reservations BEFORE
     INSERT OR UPDATE OF reservation_code,dep_time ON flight_tickets
