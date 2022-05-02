@@ -110,21 +110,41 @@
 
 -- TRIGGER
 
--- Automatically generate primary key for flight_trig
+-- First trigger automatically generates
+-- ID for flight tickets
+-- and uses increment in sequence flight_ticket_id
 
-CREATE OR REPLACE TRIGGER flight_trig BEFORE
-    INSERT ON flight_tickets
+CREATE OR REPLACE TRIGGER flight_trig
+    BEFORE INSERT
+    ON flight_tickets
 	FOR EACH ROW
-    WHEN(NEW.id IS NULL)
+    WHEN ( NEW.id IS NULL )
     BEGIN
         SELECT flight_ticket_id.NEXTVAL
         INTO : NEW.id
         FROM dual;
     END;
+/
+
+-- The second trigger indicates that the reservation was outdated
+-- compare two dates, reservation date and flight date
+
+CREATE OR REPLACE TRIGGER checking_reservations BEFORE
+    INSERT OR UPDATE OF reservation_code,dep_time ON flight_tickets
+    FOR EACH ROW
+DECLARE
+    reservation_time TIMESTAMP;
+BEGIN
+    SELECT created_at INTO reservation_time FROM reservations WHERE reservations.id = :NEW.reservation_code;
+
+    IF ( :NEW.dep_time < reservation_time )
+    THEN dbms_output.put_line('Reservation has an outdated ticket.');
+    END IF;
+END;
+/
 
 -- FILL TABLES
 
-    -- CUSTOMERS
     INSERT INTO customers(first_name, last_name, email, street, town, post_code, user_country)
         VALUES('Leonardo', 'Blue', 'leotheleader@gmail.com', 'Bayport Lane', 'New York', 10461, 'US');
 
@@ -435,6 +455,7 @@ CREATE OR REPLACE TRIGGER flight_trig BEFORE
 --     into a common table, from which only those rows where the Boeing
 --     aircraft type exists are selected. As a result, only the name of
 --     the airline and the specific model of the plane are shown.
+
 SELECT DISTINCT NAME, MODEL FROM AIRCRAFTS NATURAL JOIN AIRLINES WHERE
     type = 'Boeing';
 
@@ -495,6 +516,8 @@ SELECT FIRST_NAME, LAST_NAME, TOWN FROM CUSTOMERS WHERE EXISTS(
 SELECT AIRLINE FROM FLIGHT_TICKETS WHERE
         ARR_LOC IN (SELECT AIRPORT_CODE FROM AIRPORTS WHERE CITY = 'Ottawa');
 
+
+
 /*
                  PART 4:
                  SQL SCRIPT FOR CREATING ADVANCED DATABASE SCHEMA OBJECTS:
@@ -508,6 +531,12 @@ SELECT AIRLINE FROM FLIGHT_TICKETS WHERE
                  - definition of access rights to database objects for the other team member
                  - 1 materialized view belonging to the other team member and using the tables defined by the first team member
 */
+
+-- Demonstration of the first trigger
+SELECT id FROM flight_tickets;
+-- the operation of the second trigger is
+-- a message to output after 1 reservation
+-- where date is irrelevant
 
 CREATE OR REPLACE PROCEDURE "ticket_avg_cost" AS
     "tickets_count" NUMBER;
@@ -578,6 +607,17 @@ DROP INDEX reservation_index;
 
 SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
 
+DROP VIEW customers_from_xkrupe00;
+DROP MATERIALIZED VIEW customers_from_xkrupe00_mat;
+
+--DROP MATERIALIZED VIEW customers_from_xkrupe00;
+
+GRANT ALL ON FLIGHT_TICKETS TO XVINOG00;
+GRANT ALL ON AIRCRAFTS TO XVINOG00;
+GRANT ALL ON AIRLINES TO XVINOG00;
+GRANT ALL ON AIRPORTS TO XVINOG00;
+GRANT ALL ON RESERVATIONS TO XVINOG00;
+GRANT ALL ON CUSTOMERS TO XVINOG00;
 
 GRANT ALL ON FLIGHT_TICKETS TO XKRUPE00;
 GRANT ALL ON AIRCRAFTS TO XKRUPE00;
@@ -585,3 +625,23 @@ GRANT ALL ON AIRLINES TO XKRUPE00;
 GRANT ALL ON AIRPORTS TO XKRUPE00;
 GRANT ALL ON RESERVATIONS TO XKRUPE00;
 GRANT ALL ON CUSTOMERS TO XKRUPE00;
+
+-- Materialized View
+
+CREATE VIEW customers_from_xkrupe00 AS
+    SELECT aircraft_id FROM XKRUPE00.AIRCRAFTS WHERE
+    type = 'Boeing';
+
+CREATE MATERIALIZED VIEW customers_from_xkrupe00_mat AS
+    SELECT aircraft_id FROM XKRUPE00.AIRCRAFTS WHERE
+    type = 'Boeing';
+
+-- New aircraft for demonstration
+
+INSERT INTO XKRUPE00.AIRCRAFTS(type, model, airline_code)
+    VALUES ('Boeing', '200HT', 'AUA');
+
+-- Demonstration of Materialized View
+
+SELECT aircraft_id FROM customers_from_xkrupe00;
+SELECT aircraft_id FROM customers_from_xkrupe00_mat;
