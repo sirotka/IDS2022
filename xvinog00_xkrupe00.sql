@@ -535,6 +535,8 @@ SELECT AIRLINE FROM FLIGHT_TICKETS WHERE
                  - explicit creation of at least 1 index
                  - definition of access rights to database objects for the other team member
                  - 1 materialized view belonging to the other team member and using the tables defined by the first team member
+
+                 TRIGGERS ARE BEFORE INSERTION OF VALUES
 */
 
 -- Demonstration of the first trigger
@@ -564,6 +566,8 @@ CREATE OR REPLACE PROCEDURE "ticket_avg_cost" AS
         END;
     END;
 
+-- Example outputs for 1. procedure
+-- displays the number of tickets, their total cost and the average cost per ticket
 BEGIN "ticket_avg_cost"; END;
 
 
@@ -600,34 +604,33 @@ BEGIN "aircrafts_in_airline"('USA'); END;
 BEGIN "aircrafts_in_airline"('CAA'); END;
 BEGIN "aircrafts_in_airline"('FRA'); END;
 
+
+
+-- EXPLAIN PLAN with INDEX for acceleration
 EXPLAIN PLAN FOR
     SELECT TO_CHAR(CREATED_AT, 'YYYY-MM-DD HH24:MI:SS') RESERVATION_DATE, SUM(PRICE) SUM FROM
     FLIGHT_TICKETS F  JOIN RESERVATIONS R ON F.RESERVATION_CODE = R.ID
     GROUP BY CREATED_AT
     ORDER BY RESERVATION_DATE;
 
+DROP INDEX reservation_index;
+DROP INDEX fl_tickets_index;
+
 CREATE INDEX fl_tickets_index ON FLIGHT_TICKETS(price, reservation_code);
-
 CREATE INDEX reservation_index ON RESERVATIONS(created_at, id);
-
--- DROP INDEX reservation_index;
--- DROP INDEX fl_tickets_index;
 
 SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
 
--- Materialized View
--- DROP MATERIALIZED VIEW customers_from_xkrupe00_mat;
+
+
+-- MATERIALIZED VIEW with GRANT (+ demonstration)
 
 GRANT ALL ON AIRCRAFTS TO XVINOG00;
 
-CREATE MATERIALIZED VIEW customers_from_xkrupe00_mat AS
+UPDATE XKRUPE00.AIRCRAFTS SET model = '787' WHERE aircraft_id = 1;
+DROP MATERIALIZED VIEW aircrafts_from_xkrupe00;
+CREATE MATERIALIZED VIEW aircrafts_from_xkrupe00 AS
     SELECT * FROM XKRUPE00.AIRCRAFTS WHERE
     type = 'Boeing';
 
-DROP MATERIALIZED VIEW customers_from_xkrupe00_mat;
-
--- Demonstration of Materialized View
-
-UPDATE XKRUPE00.AIRCRAFTS SET model = '777' WHERE aircraft_id = 1;
-
-SELECT * FROM customers_from_xkrupe00_mat;
+SELECT * FROM aircrafts_from_xkrupe00;
