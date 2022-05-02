@@ -33,6 +33,7 @@
 
     DROP SEQUENCE flight_ticket_id;
 
+    DROP TRIGGER flight_trig;
 
     CREATE SEQUENCE flight_ticket_id START WITH 1 INCREMENT BY 1 NOCYCLE;
 
@@ -533,15 +534,12 @@ BEGIN "ticket_avg_cost"; END;
 
 
 CREATE OR REPLACE PROCEDURE "aircrafts_in_airline"("airline_code_arg" IN VARCHAR) AS
-    "all_aircrafts" NUMBER;
-    "target_aircrafts" NUMBER := 0;
+    "aircrafts" NUMBER := 0;
     "airline_id" airlines.airline_code%TYPE;
     "target_airline_id" airlines.airline_code%TYPE;
 
     CURSOR "cursor_airlines" IS SELECT airline_code FROM AIRCRAFTS;
     BEGIN
-        SELECT COUNT(*) INTO "all_aircrafts" FROM AIRCRAFTS;
-
         SELECT airline_code INTO "target_airline_id" FROM AIRLINES WHERE airline_code = "airline_code_arg";
 
         OPEN "cursor_airlines";
@@ -550,18 +548,18 @@ CREATE OR REPLACE PROCEDURE "aircrafts_in_airline"("airline_code_arg" IN VARCHAR
             EXIT WHEN "cursor_airlines"%NOTFOUND;
 
             IF "airline_id" = "target_airline_id" THEN
-                "target_aircrafts" := "target_aircrafts" + 1;
+                "aircrafts" := "aircrafts" + 1;
             END IF;
         END LOOP;
         CLOSE "cursor_airlines";
-        DBMS_OUTPUT.PUT_LINE('Airline ' || "airline_code_arg" || ' has ' || "target_aircrafts" || ' aircraft(s) in total.');
+        DBMS_OUTPUT.PUT_LINE('Airline ' || "airline_code_arg" || ' has ' || "aircrafts" || ' aircraft(s) in total.');
 
         EXCEPTION WHEN NO_DATA_FOUND THEN BEGIN
             DBMS_OUTPUT.PUT_LINE('Airline '|| "airline_code_arg" || ' not found');
         END;
     END;
 
--- Example outputs for 1. procedure
+-- Example outputs for 2. procedure
 -- shows the number of planes that are registered with the company with the code specified by the user
 
 BEGIN "aircrafts_in_airline"('USA'); END;
@@ -569,7 +567,14 @@ BEGIN "aircrafts_in_airline"('CAA'); END;
 BEGIN "aircrafts_in_airline"('FRA'); END;
 
 EXPLAIN PLAN FOR
+    SELECT TO_CHAR(CREATED_AT, 'YYYY-MM-DD HH24:MI:SS') RESERVATION_DATE, SUM(PRICE) SUM FROM FLIGHT_TICKETS F, RESERVATIONS R WHERE
+    F.RESERVATION_CODE = R.ID
+    GROUP BY CREATED_AT
+    ORDER BY RESERVATION_DATE;
 
+CREATE INDEX reservation_index ON RESERVATIONS(created_at, id);
+-- DEBUGGING
+DROP INDEX reservation_index;
 
 SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
 
