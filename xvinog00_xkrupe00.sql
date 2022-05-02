@@ -564,19 +564,19 @@ BEGIN "ticket_avg_cost"; END;
 
 CREATE OR REPLACE PROCEDURE "aircrafts_in_airline"("airline_code_arg" IN VARCHAR) AS
     "aircrafts" NUMBER := 0;
-    "airline_id" airlines.airline_code%TYPE;
-    "target_airline_id" airlines.airline_code%TYPE;
+    "airline_code_var" airlines.airline_code%TYPE;
+    "target_airline" airlines.airline_code%TYPE;
 
     CURSOR "cursor_airlines" IS SELECT airline_code FROM AIRCRAFTS;
     BEGIN
-        SELECT airline_code INTO "target_airline_id" FROM AIRLINES WHERE airline_code = "airline_code_arg";
+        SELECT airline_code INTO "target_airline" FROM AIRLINES WHERE airline_code = "airline_code_arg";
 
         OPEN "cursor_airlines";
         LOOP
-            FETCH "cursor_airlines" INTO "airline_id";
+            FETCH "cursor_airlines" INTO "airline_code_var";
             EXIT WHEN "cursor_airlines"%NOTFOUND;
 
-            IF "airline_id" = "target_airline_id" THEN
+            IF "airline_code_var" = "target_airline" THEN
                 "aircrafts" := "aircrafts" + 1;
             END IF;
         END LOOP;
@@ -596,52 +596,33 @@ BEGIN "aircrafts_in_airline"('CAA'); END;
 BEGIN "aircrafts_in_airline"('FRA'); END;
 
 EXPLAIN PLAN FOR
-    SELECT TO_CHAR(CREATED_AT, 'YYYY-MM-DD HH24:MI:SS') RESERVATION_DATE, SUM(PRICE) SUM FROM FLIGHT_TICKETS F, RESERVATIONS R WHERE
-    F.RESERVATION_CODE = R.ID
+    SELECT TO_CHAR(CREATED_AT, 'YYYY-MM-DD HH24:MI:SS') RESERVATION_DATE, SUM(PRICE) SUM FROM
+    FLIGHT_TICKETS F  JOIN RESERVATIONS R ON F.RESERVATION_CODE = R.ID
     GROUP BY CREATED_AT
     ORDER BY RESERVATION_DATE;
 
+CREATE INDEX fl_tickets_index ON FLIGHT_TICKETS(price, reservation_code);
+
 CREATE INDEX reservation_index ON RESERVATIONS(created_at, id);
--- DEBUGGING
-DROP INDEX reservation_index;
+
+-- DROP INDEX reservation_index;
+-- DROP INDEX fl_tickets_index;
 
 SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
 
-DROP VIEW customers_from_xkrupe00;
-DROP MATERIALIZED VIEW customers_from_xkrupe00_mat;
-
---DROP MATERIALIZED VIEW customers_from_xkrupe00;
-
-GRANT ALL ON FLIGHT_TICKETS TO XVINOG00;
-GRANT ALL ON AIRCRAFTS TO XVINOG00;
-GRANT ALL ON AIRLINES TO XVINOG00;
-GRANT ALL ON AIRPORTS TO XVINOG00;
-GRANT ALL ON RESERVATIONS TO XVINOG00;
-GRANT ALL ON CUSTOMERS TO XVINOG00;
-
-GRANT ALL ON FLIGHT_TICKETS TO XKRUPE00;
-GRANT ALL ON AIRCRAFTS TO XKRUPE00;
-GRANT ALL ON AIRLINES TO XKRUPE00;
-GRANT ALL ON AIRPORTS TO XKRUPE00;
-GRANT ALL ON RESERVATIONS TO XKRUPE00;
-GRANT ALL ON CUSTOMERS TO XKRUPE00;
-
 -- Materialized View
+-- DROP MATERIALIZED VIEW customers_from_xkrupe00_mat;
 
-CREATE VIEW customers_from_xkrupe00 AS
-    SELECT aircraft_id FROM XKRUPE00.AIRCRAFTS WHERE
-    type = 'Boeing';
+GRANT ALL ON AIRCRAFTS TO XVINOG00;
 
 CREATE MATERIALIZED VIEW customers_from_xkrupe00_mat AS
-    SELECT aircraft_id FROM XKRUPE00.AIRCRAFTS WHERE
+    SELECT * FROM XKRUPE00.AIRCRAFTS WHERE
     type = 'Boeing';
 
--- New aircraft for demonstration
-
-INSERT INTO XKRUPE00.AIRCRAFTS(type, model, airline_code)
-    VALUES ('Boeing', '200HT', 'AUA');
+DROP MATERIALIZED VIEW customers_from_xkrupe00_mat;
 
 -- Demonstration of Materialized View
 
-SELECT aircraft_id FROM customers_from_xkrupe00;
-SELECT aircraft_id FROM customers_from_xkrupe00_mat;
+UPDATE XKRUPE00.AIRCRAFTS SET model = '777' WHERE aircraft_id = 1;
+
+SELECT * FROM customers_from_xkrupe00_mat;
